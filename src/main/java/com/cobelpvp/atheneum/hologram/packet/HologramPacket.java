@@ -2,30 +2,37 @@ package com.cobelpvp.atheneum.hologram.packet;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
+import java.beans.ConstructorProperties;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.bukkit.entity.Player;
 
-@AllArgsConstructor
-public class
-HologramPacket {
+public class HologramPacket {
+    private List<PacketContainer> packets;
+    private List<Integer> entityIds;
 
-	@Getter private final List<PacketContainer> packets;
-	@Getter private final List<Integer> entityIds;
+    public void sendToPlayer(Player player) {
+        this.packets.forEach((packet) -> {
+            try {
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+            } catch (InvocationTargetException var3) {
+                var3.printStackTrace();
+            }
 
-	public void sendToPlayer(Player player) {
+        });
+    }
 
-		this.packets.forEach(packet -> {
+    @ConstructorProperties({"packets", "entityIds"})
+    public HologramPacket(List<PacketContainer> packets, List<Integer> entityIds) {
+        this.packets = packets;
+        this.entityIds = entityIds;
+    }
 
-			try {
-				ProtocolLibrary.getProtocolManager().sendServerPacket(player,packet);
-			} catch (InvocationTargetException ex) {
-				ex.printStackTrace();
-			}
+    public List<PacketContainer> getPackets() {
+        return this.packets;
+    }
 
-		});
-
-	}
+    public List<Integer> getEntityIds() {
+        return this.entityIds;
+    }
 }

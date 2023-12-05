@@ -1,0 +1,7 @@
+name: Atheneum
+version: 1.2.8
+author: CobelPvP Development Team
+description: All the libraries for the proyects of CobelPvP.
+main: com.cobelpvp.atheneum.Atheneum
+softdepend: [ProtocolLib]
+load: STARTUP

@@ -5,6 +5,7 @@ import com.cobelpvp.atheneum.command.TeamsCommandHandler;
 import com.cobelpvp.atheneum.economy.TeamsEconomyHandler;
 import com.cobelpvp.atheneum.event.HalfHourEvent;
 import com.cobelpvp.atheneum.event.HourEvent;
+import com.cobelpvp.atheneum.hologram.HologramHandler;
 import com.cobelpvp.atheneum.nametag.TeamsNametagHandler;
 import com.cobelpvp.atheneum.protocol.InventoryAdapter;
 import com.cobelpvp.atheneum.protocol.LagCheck;
@@ -16,6 +17,7 @@ import com.cobelpvp.atheneum.util.ItemUtils;
 import com.cobelpvp.atheneum.util.TPSUtils;
 import com.cobelpvp.atheneum.uuid.TeamsUUIDCache;
 import com.cobelpvp.atheneum.visibility.TeamsVisibilityHandler;
+import com.cobelpvp.atheneum.visibility.VisibilityHandler;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import lombok.Setter;
@@ -53,7 +55,13 @@ public class Atheneum extends JavaPlugin {
     @Getter private long localRedisLastError;
     @Getter private long backboneRedisLastError;
 
+    private HologramHandler hologramHandler;
+
+    private TeamsCommandHandler teamscommandHandler;
+
     public static final Random RANDOM = new Random();
+
+    private TeamsVisibilityHandler teamsvisibilityHandler;
 
     public static final Gson GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(PotionEffect.class, new PotionEffectAdapter()).registerTypeHierarchyAdapter(ItemStack.class, new ItemStackAdapter()).registerTypeHierarchyAdapter(Location.class, new LocationAdapter()).registerTypeHierarchyAdapter(Vector.class, new VectorAdapter()).registerTypeAdapter(BlockVector.class, new BlockVectorAdapter()).setPrettyPrinting().serializeNulls().create();
     public static final Gson PLAIN_GSON = (new GsonBuilder()).registerTypeHierarchyAdapter(PotionEffect.class, new PotionEffectAdapter()).registerTypeHierarchyAdapter(ItemStack.class, new ItemStackAdapter()).registerTypeHierarchyAdapter(Location.class, new LocationAdapter()).registerTypeHierarchyAdapter(Vector.class, new VectorAdapter()).registerTypeAdapter(BlockVector.class, new BlockVectorAdapter()).serializeNulls().create();
@@ -65,6 +73,11 @@ public class Atheneum extends JavaPlugin {
     public void onEnable() {
         instance = this;
         plugin = this;
+        this.hologramHandler = new HologramHandler();
+
+        this.teamscommandHandler = new TeamsCommandHandler();
+
+        this.teamsvisibilityHandler = new TeamsVisibilityHandler();
 
         testing = this.getConfig().getBoolean("testing", false);
 
@@ -96,6 +109,7 @@ public class Atheneum extends JavaPlugin {
         // This close the jedis pool
         this.localJedisPool.close();
         this.backboneJedisPool.close();
+        this.hologramHandler.save();
     }
 
     public void registerTeamsHandlers() {
@@ -185,6 +199,18 @@ public class Atheneum extends JavaPlugin {
             }
         }
         return result;
+    }
+
+    public HologramHandler getHologramHandler() {
+        return this.hologramHandler;
+    }
+
+    public TeamsCommandHandler getTeamsCommandHandler() {
+        return this.teamscommandHandler;
+    }
+
+    public TeamsVisibilityHandler getTeamsVisibilityHandler() {
+        return this.teamsvisibilityHandler;
     }
 
     private void setupHourEvents() {

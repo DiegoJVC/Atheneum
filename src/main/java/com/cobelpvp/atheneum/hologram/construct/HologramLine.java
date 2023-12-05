@@ -1,20 +1,29 @@
 package com.cobelpvp.atheneum.hologram.construct;
 
 import com.cobelpvp.atheneum.util.EntityUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class HologramLine {
+    private final int skullId = EntityUtils.getFakeEntityId();
+    private final int horseId = EntityUtils.getFakeEntityId();
+    private String text;
 
-	@Getter private final int skullId;
-	@Getter private final int horseId;
+    public HologramLine(String text) {
+        this.text = text;
+    }
 
-	@Getter @Setter private String text;
+    public int getSkullId() {
+        return this.skullId;
+    }
 
-	public HologramLine(String text) {
-		this.skullId = EntityUtils.getFakeEntityId();
-		this.horseId = EntityUtils.getFakeEntityId();
-		this.text = text;
-	}
+    public int getHorseId() {
+        return this.horseId;
+    }
 
+    public String getText() {
+        return this.text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

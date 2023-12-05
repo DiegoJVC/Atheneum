@@ -26,7 +26,7 @@ public class TeamsVisibilityHandler
     private static final Map<String, OverrideHandler> overrideHandlers;
     private static boolean initiated;
 
-    private TeamsVisibilityHandler() {
+    public TeamsVisibilityHandler() {
     }
 
     public static void init() {

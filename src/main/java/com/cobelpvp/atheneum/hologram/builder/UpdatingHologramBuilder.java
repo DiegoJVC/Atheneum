@@ -2,34 +2,39 @@ package com.cobelpvp.atheneum.hologram.builder;
 
 import com.cobelpvp.atheneum.hologram.construct.Hologram;
 import com.cobelpvp.atheneum.hologram.type.UpdatingHologram;
-import lombok.Getter;
+
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public final class UpdatingHologramBuilder extends HologramBuilder {
+    private long interval;
+    private Consumer<Hologram> updateFunction;
 
-	@Getter private long interval;
-	@Getter private Consumer<Hologram> updateFunction;
+    public UpdatingHologramBuilder(HologramBuilder hologramBuilder) {
+        super(hologramBuilder.getViewers());
+        this.lines = hologramBuilder.getLines();
+        this.at(hologramBuilder.getLocation());
+    }
 
-	public UpdatingHologramBuilder(HologramBuilder hologramBuilder) {
-		super(hologramBuilder.getViewers());
+    public UpdatingHologramBuilder interval(long time, TimeUnit unit) {
+        this.interval = unit.toSeconds(time);
+        return this;
+    }
 
-		this.lines = hologramBuilder.getLines();
-		this.at(hologramBuilder.getLocation());
-	}
+    public UpdatingHologramBuilder onUpdate(Consumer<Hologram> onUpdate) {
+        this.updateFunction = onUpdate;
+        return this;
+    }
 
-	public UpdatingHologramBuilder interval(long time, TimeUnit unit) {
-		this.interval = unit.toSeconds(time);
-		return this;
-	}
+    public Hologram build() {
+        return new UpdatingHologram(this);
+    }
 
-	public UpdatingHologramBuilder onUpdate(Consumer<Hologram> onUpdate) {
-		this.updateFunction = onUpdate;
-		return this;
-	}
+    public long getInterval() {
+        return this.interval;
+    }
 
-	public Hologram build() {
-		return new UpdatingHologram(this);
-	}
-
+    public Consumer<Hologram> getUpdateFunction() {
+        return this.updateFunction;
+    }
 }
